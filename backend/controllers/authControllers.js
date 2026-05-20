@@ -1,6 +1,7 @@
+import { redis } from "../lib/redis.js";
 import { generateTokens, setCookies, storeRefreshToken } from "../lib/utils.js";
 import UserModel from "../models/userModel.js";
-
+import jwt from "jsonwebtoken";
 export const signUpController = async (req, res) => {
   console.log(req.body);
   const { name, email, password } = req.body;
@@ -36,3 +37,18 @@ export const signUpController = async (req, res) => {
 // login controller
 
 export const loginController = async (req, res) => {};
+
+export const logoutController = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken)
+    return res.status(401).json({ message: "Missign refreshToken" });
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    await redis.del(`refreshToken:${decoded.userId}`);
+    res.clearCookie("refreshToken");
+    return res.status(200).json({ message: "You logged out successfully" });
+  } catch (err) {
+    console.log("error in the logout controller ", err);
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+};
