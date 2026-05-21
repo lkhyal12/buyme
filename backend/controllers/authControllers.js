@@ -110,3 +110,17 @@ export const refresh = async (req, res) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 };
+
+// get profile controllers
+export const getProfile = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.userId).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    return res
+      .status(200)
+      .json({ message: "User info sent successfully", user });
+  } catch (err) {
+    console.log("error in the getProfile controller ", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
