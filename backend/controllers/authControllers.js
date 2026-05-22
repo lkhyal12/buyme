@@ -112,10 +112,9 @@ export const refresh = async (req, res) => {
 };
 
 // get profile controllers
-export const getProfile = async (req, res) => {
+export const getProfileController = async (req, res) => {
   try {
-    const user = await UserModel.findById(req.userId).select("-password");
-    if (!user) return res.status(404).json({ message: "User not found" });
+    const user = req.user;
     return res
       .status(200)
       .json({ message: "User info sent successfully", user });
