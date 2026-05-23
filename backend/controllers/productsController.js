@@ -90,3 +90,61 @@ export const deleteProductController = async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+// getrecommended products
+export const getrecommendedProducts = async (req, res) => {
+  try {
+    const products = await ProductModel.aggregate([
+      { $sample: 3 },
+      {
+        $project: {
+          image: 1,
+          _id: 1,
+          price: 1,
+          category: 1,
+          description: 1,
+          name: 1,
+        },
+      },
+    ]);
+    return res
+      .status(200)
+      .json({ message: "Products sent successfully", products });
+  } catch (err) {
+    console.log("error in the getrecommended products controller ", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// getProducts by category controller
+export const getProductsByCategory = async (req, res) => {
+  const { category } = req.params;
+
+  try {
+    const products = await ProductModel.find({ category });
+    return res
+      .status(200)
+      .json({ message: "Products sent successfully", products });
+  } catch (err) {
+    console.log("error in the getProductsByCategory controller ", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// toggle featured product controller
+export const toggleFeaturedProduct = async (req, res) => {
+  const productId = req.params.id;
+  if (!productId) return res.status(400).json({ message: "Missing productId" });
+  try {
+    const product = await ProductModel.findByIdAndUpdate(productId);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+    product.isFeatured = !product.isFeatured;
+    await product.save();
+    return res
+      .status(200)
+      .json({ message: "Product updated successfully", product });
+  } catch (err) {
+    console.log("error in the toggleFeatured product controller ", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
