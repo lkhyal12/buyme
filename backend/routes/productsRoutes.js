@@ -14,6 +14,7 @@ productsRouter.get("/", protectedRoute, adminRoute, getAllProductsController);
 productsRouter.get("/featured", getFeaturedProducts);
 productsRouter.get("/recommendations", getrecommendedProducts);
 productsRouter.get("/category/:category", getProductsByCategory);
+
 productsRouter.post("/", protectedRoute, adminRoute, createProductController);
 productsRouter.delete(
   "/:id",

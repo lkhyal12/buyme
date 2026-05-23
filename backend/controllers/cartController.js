@@ -61,15 +61,30 @@ export const updateQuantity = async (req, res) => {
         );
       } else existingItem.quantity = quantity;
       await user.save();
-      return res
-        .status(200)
-        .json({
-          message: "Product count updated successfully",
-          products: user.cartItems,
-        });
+      return res.status(200).json({
+        message: "Product count updated successfully",
+        products: user.cartItems,
+      });
     }
   } catch (err) {
     console.log("error in the updatequantity controller ", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// get cart products controller
+export const getCartProducts = async (req, res) => {
+  const user = req.user;
+  try {
+    const products = await ProductModel.find({ _id: { $in: user.cartItems } });
+    const cartItems = products.map((product) => {
+      const item = user.cartItems.find((p) => p.product === product._id);
+      return { ...product.toJSON(), quantity: item.quantity };
+    });
+
+    return res.json({ message: "Products sent successfully", cartItems });
+  } catch (err) {
+    console.log("error in the getCartProducts controlle ", err);
     return res.status(500).json({ message: "Server error" });
   }
 };
