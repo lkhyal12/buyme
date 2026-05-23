@@ -1,4 +1,3 @@
-import { Profiler } from "react";
 import cloudinary from "../lib/cloudinary.js";
 import { redis } from "../lib/redis.js";
 import ProductModel from "../models/productModel.js";
@@ -139,12 +138,23 @@ export const toggleFeaturedProduct = async (req, res) => {
     const product = await ProductModel.findByIdAndUpdate(productId);
     if (!product) return res.status(404).json({ message: "Product not found" });
     product.isFeatured = !product.isFeatured;
-    await product.save();
-    return res
-      .status(200)
-      .json({ message: "Product updated successfully", product });
+    const updatedProduct = await product.save();
+    await updateFeaturedProductsInCache();
+    return res.status(200).json({
+      message: "Product updated successfully",
+      product: updatedProduct,
+    });
   } catch (err) {
     console.log("error in the toggleFeatured product controller ", err);
     return res.status(500).json({ message: "Server error" });
   }
 };
+
+async function updateFeaturedProductsInCache() {
+  try {
+    const featuredProducts = await ProductModel.find({ isFeatured: true });
+    await redis.set("featuredProducts", JSON.stringify(featuredProducts));
+  } catch (err) {
+    console.log("error in the updatefeaturedproductscache ", err);
+  }
+}

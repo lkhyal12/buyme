@@ -4,6 +4,7 @@ import authRouter from "./routes/authRoutes.js";
 import { connectToMongoDb } from "./lib/connectToMongoDB.js";
 import cookieParser from "cookie-parser";
 import productsRouter from "./routes/productsRoutes.js";
+import cartRouter from "./routes/cartRouter.js";
 
 const app = express();
 dotenv.config();
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use("/api/auth", authRouter);
 app.use("/api/products", productsRouter);
+app.use("/api/cart", cartRouter);
 
 app.listen(PORT, () => {
   connectToMongoDb();
