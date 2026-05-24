@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import productsRouter from "./routes/productsRoutes.js";
 import cartRouter from "./routes/cartRouter.js";
 import couponRouter from "./routes/couponRouter.js";
+import paymentRouter from "./routes/paymentRouter.js";
 
 const app = express();
 dotenv.config();
@@ -17,6 +18,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/coupon", couponRouter);
+app.use("/api/payment", paymentRouter);
 
 app.listen(PORT, () => {
   connectToMongoDb();
