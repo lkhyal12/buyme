@@ -7,6 +7,7 @@ import productsRouter from "./routes/productsRoutes.js";
 import cartRouter from "./routes/cartRouter.js";
 import couponRouter from "./routes/couponRouter.js";
 import paymentRouter from "./routes/paymentRouter.js";
+import analyticsRouter from "./routes/analyticsRouter.js";
 
 const app = express();
 dotenv.config();
@@ -19,6 +20,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/coupon", couponRouter);
 app.use("/api/payment", paymentRouter);
+app.use("/api/analytics", analyticsRouter);
 
 app.listen(PORT, () => {
   connectToMongoDb();
