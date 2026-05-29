@@ -1,7 +1,24 @@
 import express from "express";
+import {
+  getAnalytics,
+  getDailySalesData,
+} from "../controllers/analyticsController";
 
 const analyticsRouter = express.Router();
 
-analyticsRouter;
+analyticsRouter.get("/", async (req, res) => {
+  try {
+    const analyticsData = getAnalytics();
+    const endDate = new Date();
+    const startDate = new Date(endDate.getTime() * 7 * 24 * 60 * 60 * 1000);
+
+    const dailySalesData = getDailySalesData(startDate, endDate);
+
+    return res.status(200).json({ message: "", analyticsData, dailySalesData });
+  } catch (err) {
+    console.log("error in the analyticsROuter ", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+});
 
 export default analyticsRouter;
