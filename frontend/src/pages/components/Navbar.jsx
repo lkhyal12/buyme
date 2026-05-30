@@ -2,9 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Lock, LogIn, LogOut, ShoppingCart, UserPlus } from "lucide-react";
 const Navbar = () => {
-  const user = true;
+  const user = false;
   const cart = [0, 0];
-  const isAdmin = true;
+  const isAdmin = false;
 
   function logout() {}
   return (
