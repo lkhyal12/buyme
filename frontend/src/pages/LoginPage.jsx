@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock, LogIn, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight, Loader, Lock, LogIn, Mail } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import toast from "react-hot-toast";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const loading = false;
-  const handleSubmit = (e) => {
+  const { loading, user, error, login } = useAuthStore();
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email, password);
+    const { success } = await login(email, password);
+    if (success) {
+      toast.success("You logged in successfully");
+      return navigate("/");
+    }
   };
   return (
     <div className="h-dvh w-screen flex items-center justify-center">
@@ -93,7 +100,7 @@ const LoginPage = () => {
                 className="w-full flex justify-center py-2 px-4 border border-transparent 
 							rounded-md shadow-sm text-sm font-medium text-white bg-emerald-600
 							 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2
-							  focus:ring-emerald-500 transition duration-150 ease-in-out disabled:opacity-50"
+							  focus:ring-emerald-500 transition duration-150 ease-in-out disabled:opacity-50 disabled:pointer-events-none relative z-20 cursor-pointer"
                 disabled={loading}
               >
                 {loading ? (
@@ -112,7 +119,7 @@ const LoginPage = () => {
                 )}
               </button>
             </form>
-            <p className="mt-8 text-center text-sm text-gray-400">
+            <p className="mt-8 text-center text-sm text-gray-400 relative z-20">
               Not a member?{" "}
               <Link
                 to="/signup"

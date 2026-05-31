@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Loader, Lock, Mail, User, UserPlus, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthStore } from "../store/authStore";
+import toast from "react-hot-toast";
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -10,10 +12,21 @@ const SignUpPage = () => {
     confirmPassword: "",
   });
 
-  const loading = false;
-  function handleSubmit(e) {
+  const { loading, signUp } = useAuthStore();
+  const navigate = useNavigate();
+  async function handleSubmit(e) {
     e.preventDefault();
-    console.log(formData);
+    const { success } = await signUp(
+      formData.name,
+      formData.email,
+      formData.password,
+      formData.confirmPassword,
+    );
+    if (success) {
+      toast.success("Account created succesffuly");
+      console.log({ success });
+      return navigate("/");
+    }
   }
   return (
     <div className="h-dvh w-screen flex items-center justify-center">
@@ -165,6 +178,9 @@ const SignUpPage = () => {
 							 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2
 							  focus:ring-emerald-500 transition duration-150 ease-in-out disabled:opacity-50 cursor-pointer relative z-20"
                 disabled={loading}
+                style={{
+                  pointerEvents: loading ? "none" : "auto",
+                }}
               >
                 {loading ? (
                   <>

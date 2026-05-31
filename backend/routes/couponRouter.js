@@ -1,5 +1,5 @@
 import express from "express";
-import { protectedRoute } from "../middleware/protectedRoute";
+import { protectedRoute } from "../middleware/protectedRoute.js";
 import { getCoupon, validateCoupon } from "../controllers/couponController.js";
 const couponRouter = express.Router();
 

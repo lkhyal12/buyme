@@ -2,7 +2,7 @@ import express from "express";
 import {
   getAnalytics,
   getDailySalesData,
-} from "../controllers/analyticsController";
+} from "../controllers/analyticsController.js";
 
 const analyticsRouter = express.Router();
 
