@@ -5,8 +5,16 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import { Toaster } from "react-hot-toast";
+import AdminDashboard from "./pages/AdminDashboard";
+import { useAuthStore } from "./store/authStore";
+import { useEffect } from "react";
 
 const App = () => {
+  const { checkAuth, user } = useAuthStore();
+  console.log(user);
+  useEffect(() => {
+    checkAuth();
+  }, []);
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
       <Toaster position="top-center" reverseOrder={false} />
@@ -20,6 +28,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
     </div>
   );
