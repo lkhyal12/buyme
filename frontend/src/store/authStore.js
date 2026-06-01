@@ -7,7 +7,7 @@ export const useAuthStore = create((set, get) => ({
   loading: false,
   error: null,
   accessToken: null,
-
+  cart: [],
   signUp: async (name, email, password, confrimPassword) => {
     set({ loading: true });
     if (password !== confrimPassword) {
@@ -75,6 +75,44 @@ export const useAuthStore = create((set, get) => ({
       return { success: false };
     } finally {
       set({ loading: false });
+    }
+  },
+
+  // logout function
+  logout: async () => {
+    set({ loading: true });
+    try {
+      const response = await axiosInstance.post("/auth/logout");
+      set({ user: null });
+      return { success: true };
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || err.message || "something went wrong",
+      );
+      return { success: false };
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  // checkauth function
+  checkAuth: async () => {
+    set({ isCheckingAuth: true });
+    try {
+      const response = await axiosInstance.get("/auth/profile", {
+        headers: {
+          Authorization: `Bearer ${get().accessToken}`,
+        },
+      });
+      console.log({ response });
+      set({ user: response.data.user });
+      return { success: true };
+    } catch (err) {
+      console.log(err);
+      set({ user: null });
+      return { success: false };
+    } finally {
+      set({ isCheckingAuth: false });
     }
   },
 }));
