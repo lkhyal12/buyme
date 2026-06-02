@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import { toast } from "react-hot-toast";
+import { getErrorMsg } from "../lib/utils";
 export const useAuthStore = create((set, get) => ({
   user: null,
   isCheckingAuth: true,
@@ -28,12 +29,10 @@ export const useAuthStore = create((set, get) => ({
       });
       return { success: true };
     } catch (err) {
-      toast.error(
-        err?.response?.data?.message || err.message || "something went wrong",
-      );
+      const errMsg = getErrorMsg(err);
+      toast.error(errMsg);
       set({
-        error:
-          err?.response?.data?.message || err.message || "something went wrong",
+        error: errMsg,
       });
       return { success: false };
     } finally {
@@ -60,14 +59,10 @@ export const useAuthStore = create((set, get) => ({
       });
       return { success: true };
     } catch (err) {
-      toast.error(
-        err?.response?.data?.message || err?.message || "something went wrong",
-      );
+      const errMsg = getErrorMsg(err);
+      toast.error(errMsg);
       set({
-        error:
-          err?.response?.data?.message ||
-          err?.message ||
-          "something went wrong",
+        error: errMsg,
         loading: false,
         user: null,
         accessToken: null,
@@ -86,9 +81,8 @@ export const useAuthStore = create((set, get) => ({
       set({ user: null });
       return { success: true };
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || err.message || "something went wrong",
-      );
+      const errMsg = getErrorMsg(err);
+      toast.error(errMsg);
       return { success: false };
     } finally {
       set({ loading: false });

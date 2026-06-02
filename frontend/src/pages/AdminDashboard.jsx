@@ -5,6 +5,7 @@ import CreateProductForm from "../components/CreateProductForm";
 import AnalyticsTab from "../components/AnalyticsTab";
 import ProductsList from "../components/ProductsList";
 import { useProducteStore } from "../store/productStore";
+import { useEffect } from "react";
 const tabs = [
   { id: "create", label: "Create Product", icon: PlusCircle },
   { id: "products", label: "Products", icon: ShoppingBasket },
@@ -12,6 +13,11 @@ const tabs = [
 ];
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("create");
+  const { fetchAllProducts, loading } = useProducteStore();
+
+  useEffect(() => {
+    fetchAllProducts();
+  }, [fetchAllProducts]);
 
   return (
     <div className="min-h-screen relative overflow-hidden">
