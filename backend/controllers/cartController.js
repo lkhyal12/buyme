@@ -2,10 +2,12 @@ import ProductModel from "../models/productModel.js";
 export const addToCartController = async (req, res) => {
   const productId = req.body.productId;
   const user = req.user;
+  console.log({ productId }, user);
   try {
     const existingItem = user.cartItems.find(
       (item) => item.product.toString() === productId,
     );
+    console.log({ existingItem });
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
@@ -15,6 +17,10 @@ export const addToCartController = async (req, res) => {
       });
     }
     await user.save();
+    console.log({ user });
+    return res
+      .status(200)
+      .json({ message: "product was added successfully", success: true });
   } catch (err) {
     console.log("error in add to cart controller ", err);
     return res.status(500).json({ message: "Server error" });
@@ -76,10 +82,12 @@ export const updateQuantity = async (req, res) => {
 export const getCartProducts = async (req, res) => {
   const user = req.user;
   try {
-    const products = await ProductModel.find({ _id: { $in: user.cartItems } });
+    const productIds = user.cartItems.map((el) => el.product);
+    const products = await ProductModel.find({ _id: { $in: productIds } });
+
     const cartItems = products.map((product) => {
       const item = user.cartItems.find((p) => p.product === product._id);
-      return { ...product.toJSON(), quantity: item.quantity };
+      return { ...product.toJSON(), quantity: item?.quantity || 1 };
     });
 
     return res.json({ message: "Products sent successfully", cartItems });

@@ -8,7 +8,6 @@ export const useAuthStore = create((set, get) => ({
   loading: false,
   error: null,
   accessToken: null,
-  cart: [],
   signUp: async (name, email, password, confrimPassword) => {
     set({ loading: true });
     if (password !== confrimPassword) {

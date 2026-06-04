@@ -25,6 +25,9 @@ const ProductsList = () => {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
               Category
             </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
+              Actions
+            </th>
           </tr>
         </thead>
 
@@ -65,11 +68,9 @@ const ProductsList = () => {
                 >
                   <Star className="size-5 " />
                 </button>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                 <button
                   onClick={() => deleteProduct(product._id)}
-                  className="text-red-400 hover:text-red-300"
+                  className="text-red-400 hover:text-red-300 ml-4"
                 >
                   <Trash className="h-5 w-5" />
                 </button>
