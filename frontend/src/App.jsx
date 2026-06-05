@@ -9,6 +9,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import CategoryPage from "./pages/CategoryPage";
+import CartPage from "./pages/CartPage";
 
 const App = () => {
   const { checkAuth, user } = useAuthStore();
@@ -31,6 +32,7 @@ const App = () => {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/category/:category" element={<CategoryPage />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
     </div>
   );

@@ -29,13 +29,14 @@ export const addToCartController = async (req, res) => {
 
 // remove all products from cart
 export const removeAllFromCart = async (req, res) => {
+  console.log(req.body, "hhhhh");
   const { productId } = req.body;
   const user = req.user;
   try {
     if (!productId) user.cartItems = [];
     else {
       user.cartItems = user.cartItems.filter(
-        (item) => item.product !== productId,
+        (item) => item.product.toString() !== productId.toString(),
       );
     }
     await user.save();
@@ -52,11 +53,13 @@ export const removeAllFromCart = async (req, res) => {
 // update quantity controller
 export const updateQuantity = async (req, res) => {
   const { id: productId } = req.params;
-  const quantity = req.body.quantity;
+  const quantity = req.body.data.quantity;
+  console.log({ quantity });
+  console.log(req.body, "update");
   const { user } = req;
   try {
     const existingItem = user.cartItems.find(
-      (item) => item.product === productId,
+      (item) => item.product.toString() === productId.toString(),
     );
     if (!existingItem) {
       return res.status(404).json({ message: "Item not found" });
@@ -86,7 +89,9 @@ export const getCartProducts = async (req, res) => {
     const products = await ProductModel.find({ _id: { $in: productIds } });
 
     const cartItems = products.map((product) => {
-      const item = user.cartItems.find((p) => p.product === product._id);
+      const item = user.cartItems.find(
+        (p) => p.product.toString() === product._id.toString(),
+      );
       return { ...product.toJSON(), quantity: item?.quantity || 1 };
     });
 

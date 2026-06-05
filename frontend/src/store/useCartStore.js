@@ -52,6 +52,59 @@ export const useCartStore = create((set, get) => ({
       return { success: false };
     }
   },
+
+  // remove from cart
+  removeFromCart: async (productId) => {
+    try {
+      const response = await axiosInstance.delete(`/cart`, {
+        data: {
+          productId,
+        },
+      });
+      set((prevState) => {
+        const newCartProducts = prevState.cart.filter(
+          (p) => p._id !== productId,
+        );
+        return { cart: newCartProducts };
+      });
+      get().calculateTotal();
+      return { success: true };
+    } catch (error) {
+      const errMsg = getErrorMsg(error);
+      toast.error(errMsg);
+      return { success: false };
+    }
+  },
+  // update quantity in the backend
+  updateQuantity: async (productId, quantity) => {
+    if (quantity === 0) {
+      await get().removeFromCart(productId);
+      return;
+    }
+    try {
+      const response = await axiosInstance.put(`/cart/${productId}`, {
+        data: {
+          productId,
+          quantity,
+        },
+      });
+      set((prevState) => {
+        const updatedCartProducts = prevState.cart.map((item) => {
+          if (item._id === productId) {
+            return { ...item, quantity: quantity };
+          }
+          return item;
+        });
+        return { cart: updatedCartProducts };
+      });
+
+      return { success: true };
+    } catch (err) {
+      const errMsg = getErrorMsg(err);
+      toast.error(errMsg, { id: "update quantity" });
+      return { success: false };
+    }
+  },
   //   calculate total function
   calculateTotal: () => {
     const { cart, coupon } = get();

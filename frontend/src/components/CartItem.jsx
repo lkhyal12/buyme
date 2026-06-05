@@ -1,0 +1,61 @@
+import { Minus, Plus } from "lucide-react";
+import React from "react";
+import { useCartStore } from "../store/useCartStore";
+
+const CartItem = ({ item }) => {
+  const { removeFromCart, updateQuantity } = useCartStore();
+
+  async function handleIncreaseQuantity() {
+    console.log("update");
+    const { success } = await updateQuantity(item._id, item.quantity + 1);
+  }
+
+  async function handleDecreaseQuantity() {
+    console.log("decrease");
+    const { success } = await updateQuantity(item._id, item.quantity - 1);
+  }
+  return (
+    <div className="rounded-lg border p-4 shadow-sm border-gray-700 bg-gray-800 md:p-6">
+      <div className="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+        <div className="shrink-0 md:order-1">
+          <img
+            src={item.image}
+            alt={item.name}
+            className="h-20 md:h-32 rounded object-cover"
+          />
+        </div>
+        <label className="sr-only">Choose quantity:</label>
+
+        <div className="flex items-center justify-between md:order-3 md:justify-end relative z-10">
+          <div className="flex items-center gap-2">
+            <button
+              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border
+							 border-gray-600 bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2
+							  focus:ring-emerald-500"
+              onClick={handleDecreaseQuantity}
+            >
+              <Minus className="text-gray-300" />
+            </button>
+            <p>{item.quantity}</p>
+            <button
+              className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border
+							 border-gray-600 bg-gray-700 hover:bg-gray-600 focus:outline-none 
+						focus:ring-2 focus:ring-emerald-500"
+              onClick={handleIncreaseQuantity}
+            >
+              <Plus className="text-gray-300" />
+            </button>
+          </div>
+
+          <div className="text-end md:order-4 md:w-32">
+            <p className="text-base font-bold text-emerald-400">
+              ${item.price}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CartItem;
