@@ -3,9 +3,10 @@ import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { getErrorMsg } from "../lib/utils";
 
-export const useProducteStore = create((set, get) => ({
+export const useProducteStore = create((set) => ({
   products: [],
   loading: false,
+  featuredProducts: [],
   createProduct: async (newProduct) => {
     set({ loading: true });
     try {
@@ -29,7 +30,7 @@ export const useProducteStore = create((set, get) => ({
     set({ loading: true });
 
     try {
-      const response = await axiosInstance.delete(`/products/${id}`);
+      await axiosInstance.delete(`/products/${id}`);
 
       set((prevState) => ({
         products: prevState.products.filter((p) => p._id !== id),
@@ -90,6 +91,17 @@ export const useProducteStore = create((set, get) => ({
       const errMsg = getErrorMsg(err);
       toast.error(errMsg);
       set({ loading: false });
+    }
+  },
+
+  fetchFeaturedProducts: async () => {
+    try {
+      const response = await axiosInstance.get("/products/featured");
+      console.log(response);
+      set({ featuredProducts: response.data.featuredProducts });
+    } catch (error) {
+      const errMsg = getErrorMsg(error);
+      toast.error(errMsg);
     }
   },
 }));

@@ -17,20 +17,23 @@ export const getAllProductsController = async (req, res) => {
 // featured controller
 export const getFeaturedProducts = async (req, res) => {
   try {
-    let featuredProducts = await redis.get("featuredProducts");
-    if (featuredProducts)
-      return res.status(200).json({
-        message: "Featured products sent successfully",
-        featuredProducts: JSON.parse(featuredProducts),
-      });
-    featuredProducts = await ProductModel.findOne({ isFeatured: true }).lean();
+    // let featuredProducts = await redis.get("featuredProducts");
+    // if (featuredProducts)
+    //   return res.status(200).json({
+    //     message: "Featured products sent successfully",
+    //     featuredProducts: JSON.parse(featuredProducts),
+    //   });
+    let featuredProducts = await ProductModel.find({
+      isFeatured: true,
+    }).lean();
+    console.log({ featuredProducts });
     if (!featuredProducts)
       return res.status(404).json({ message: "No featured products found" });
 
     await redis.set("featuredProducts", JSON.stringify(featuredProducts));
     return res.status(200).json({
       message: "Featured products sent successfully",
-      featuredProducts: JSON.stringify(featuredProducts),
+      featuredProducts: featuredProducts,
     });
   } catch (err) {
     console.log("error in the getFeatured products controller ", err);

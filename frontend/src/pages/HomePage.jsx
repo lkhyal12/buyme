@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
-import { Loader } from "lucide-react";
+// import { Loader } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import CategoryItem from "../components/CategoryItem";
+import { useProducteStore } from "../store/productStore";
+import FeaturedProducts from "../components/FeaturedProducts";
 const categories = [
   { href: "/jeans", name: "Jeans", imageUrl: "/jeans.jpg" },
   { href: "/t-shirts", name: "T-shirts", imageUrl: "/tshirts.jpg" },
@@ -13,6 +15,11 @@ const categories = [
   { href: "/bags", name: "Bags", imageUrl: "/bags.jpg" },
 ];
 const HomePage = () => {
+  const { fetchFeaturedProducts, featuredProducts } = useProducteStore();
+
+  useEffect(() => {
+    fetchFeaturedProducts();
+  }, [fetchFeaturedProducts]);
   // const { user, isCheckingAuth, checkAuth } = useAuthStore();
   // console.log({ user });
   // useEffect(() => {
@@ -34,6 +41,10 @@ const HomePage = () => {
             <CategoryItem key={category.name} category={category} />
           ))}
         </div>
+
+        {featuredProducts.length > 0 && (
+          <FeaturedProducts featuredProducts={featuredProducts} />
+        )}
       </div>
     </div>
   );
