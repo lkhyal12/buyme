@@ -33,13 +33,12 @@ export const validateCoupon = async (req, res) => {
       return res.status(400).json({ message: "Coupon expired" });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Coupon is valid",
-        code: coupon.code,
-        discountPercentage: coupon.discountPercentage,
-      });
+    return res.status(200).json({
+      message: "Coupon is valid",
+      code: coupon.code,
+      discountPercentage: coupon.discountPercentage,
+      coupon,
+    });
   } catch (err) {
     console.log("error in the validatecoupon controller ", err);
     return res.status(500).json({ message: "Server error" });

@@ -8,12 +8,13 @@ const analyticsRouter = express.Router();
 
 analyticsRouter.get("/", async (req, res) => {
   try {
-    const analyticsData = getAnalytics();
+    const analyticsData = await getAnalytics();
     const endDate = new Date();
-    const startDate = new Date(endDate.getTime() * 7 * 24 * 60 * 60 * 1000);
+    const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    const dailySalesData = getDailySalesData(startDate, endDate);
-
+    const dailySalesData = await getDailySalesData(startDate, endDate);
+    console.log({ analyticsData });
+    console.log({ dailySalesData });
     return res.status(200).json({ message: "", analyticsData, dailySalesData });
   } catch (err) {
     console.log("error in the analyticsROuter ", err);

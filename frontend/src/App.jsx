@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
@@ -10,13 +9,15 @@ import { useAuthStore } from "./store/authStore";
 import { useEffect } from "react";
 import CategoryPage from "./pages/CategoryPage";
 import CartPage from "./pages/CartPage";
+import PurchaseSuccess from "./pages/PurchaseSuccess";
+import PurchaseCancel from "./pages/PurchaseCancel";
 
 const App = () => {
   const { checkAuth, user } = useAuthStore();
   console.log(user);
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
       <Toaster position="top-center" reverseOrder={false} />
@@ -33,6 +34,11 @@ const App = () => {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/category/:category" element={<CategoryPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route
+          path="/purchase-success/:session_id"
+          element={<PurchaseSuccess />}
+        />
+        <Route path="/purchase-cancel" element={<PurchaseCancel />} />
       </Routes>
     </div>
   );

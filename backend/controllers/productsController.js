@@ -94,7 +94,7 @@ export const deleteProductController = async (req, res) => {
 export const getrecommendedProducts = async (req, res) => {
   try {
     const products = await ProductModel.aggregate([
-      { $sample: 3 },
+      { $sample: { size: 3 } },
       {
         $project: {
           image: 1,

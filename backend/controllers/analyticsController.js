@@ -3,6 +3,7 @@ import ProductModel from "../models/productModel.js";
 import OrderModel from "../models/orderModel.js";
 export const getAnalytics = async () => {
   const totalUsers = await UserModel.countDocuments();
+  console.log(totalUsers);
   const totalProducts = await ProductModel.countDocuments();
 
   const salesData = await OrderModel.aggregate([
@@ -30,7 +31,7 @@ export const getAnalytics = async () => {
 
 export const getDailySalesData = async (startDate, endDate) => {
   try {
-    const dailySalesData = await Order.aggregate([
+    const dailySalesData = await OrderModel.aggregate([
       {
         $match: {
           createdAt: {

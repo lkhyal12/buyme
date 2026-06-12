@@ -8,7 +8,7 @@ export const useCartStore = create((set, get) => ({
   coupon: null,
   total: 0,
   subTotal: 0,
-
+  isCouponApplied: false,
   getCartItems: async () => {
     try {
       const response = await axiosInstance.get("/cart");
@@ -56,7 +56,7 @@ export const useCartStore = create((set, get) => ({
   // remove from cart
   removeFromCart: async (productId) => {
     try {
-      const response = await axiosInstance.delete(`/cart`, {
+      await axiosInstance.delete(`/cart`, {
         data: {
           productId,
         },
@@ -82,7 +82,7 @@ export const useCartStore = create((set, get) => ({
       return;
     }
     try {
-      const response = await axiosInstance.put(`/cart/${productId}`, {
+      await axiosInstance.put(`/cart/${productId}`, {
         data: {
           productId,
           quantity,
@@ -97,7 +97,7 @@ export const useCartStore = create((set, get) => ({
         });
         return { cart: updatedCartProducts };
       });
-
+      get().calculateTotal();
       return { success: true };
     } catch (err) {
       const errMsg = getErrorMsg(err);
@@ -108,7 +108,10 @@ export const useCartStore = create((set, get) => ({
   //   calculate total function
   calculateTotal: () => {
     const { cart, coupon } = get();
-    const subTotal = cart.reduce((acc, el) => acc + el.total * el.quantity, 0);
+    const subTotal = cart.reduce(
+      (acc, el) => acc + parseFloat(el.price) * parseInt(el.quantity),
+      0,
+    );
     let total = subTotal;
     if (coupon) {
       const discount = subTotal * (coupon.discountPercentage / 100);
@@ -116,5 +119,45 @@ export const useCartStore = create((set, get) => ({
     }
 
     set({ total, subTotal });
+  },
+  clearCart: () => {
+    set({
+      cart: [],
+      total: 0,
+      subTotal: 0,
+      isCouponApplied: false,
+      coupon: false,
+    });
+  },
+
+  // getCoupon function
+  getMyCoupon: async () => {
+    try {
+      const response = await axiosInstance.get("/coupons");
+      set({ coupon: response.data.coupon });
+    } catch (err) {
+      const errMsg = getErrorMsg(err);
+      console.log(errMsg);
+    }
+  },
+  // apply coupon
+  applyCoupon: async (code) => {
+    try {
+      const response = await axiosInstance.post("/coupons/validate", { code });
+      set({ coupon: response.data.coupon, isCouponApplied: true });
+      get().calculateTotal();
+      toast.success("Coupon applied successfully");
+    } catch (err) {
+      const errMsg = getErrorMsg(err);
+      toast.error(errMsg);
+      console.log(err);
+    }
+  },
+
+  // remove coupon
+  removeCoupon: async () => {
+    set({ coupon: null, isCouponApplied: false });
+    get().calculateTotal();
+    toast.success("Coupon Removed");
   },
 }));

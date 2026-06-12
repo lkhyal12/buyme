@@ -1,4 +1,3 @@
-import React, { useEffect } from "react";
 import { useCartStore } from "../store/useCartStore";
 import { motion } from "framer-motion";
 import CartItem from "../components/CartItem";
@@ -6,15 +5,17 @@ import GiftCouponCard from "../components/GiftCouponCard";
 import OrderSummary from "../components/OrderSummary";
 import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
+import PeopleAlsoBought from "../components/PeopleAlsoBought";
+import { useEffect } from "react";
 const CartPage = () => {
   const { cart, getCartItems } = useCartStore();
   useEffect(() => {
     getCartItems();
-  }, []);
+  }, [getCartItems]);
   return (
     <div className="py-16">
-      <div className="mx-auto max-w-7xl px-4 2xl:px-0">
-        <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
+      <div className="mx-auto max-w-7xl px-4 2xl:px-0 ">
+        <div className="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8 max-w-7xl ">
           <motion.div
             className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl"
             initial={{ opacity: 0, x: -20 }}
@@ -24,12 +25,13 @@ const CartPage = () => {
             {cart.length === 0 ? (
               <EmptyCartUI />
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-6 mx-auto w-full">
                 {cart.map((item) => (
                   <CartItem key={item._id} item={item} />
                 ))}
               </div>
             )}
+            {cart.length > 0 && <PeopleAlsoBought />}
           </motion.div>
 
           {cart.length > 0 && (
@@ -51,7 +53,7 @@ const CartPage = () => {
 
 const EmptyCartUI = () => (
   <motion.div
-    className="flex flex-col items-center justify-center space-y-4 py-16"
+    className="flex flex-col items-center justify-center space-y-4 py-16 relative z-10"
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}

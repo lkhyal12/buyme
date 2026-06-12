@@ -13,7 +13,7 @@ import { useCartStore } from "../store/useCartStore";
 const Navbar = () => {
   const { user, logout, loading } = useAuthStore();
   const { cart, total, getCartItems } = useCartStore();
-  console.log({ cart, total });
+
   const isAdmin = user?.role === "admin";
   const navigate = useNavigate();
   async function handleLogout() {
