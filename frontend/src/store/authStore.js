@@ -8,6 +8,7 @@ export const useAuthStore = create((set, get) => ({
   loading: false,
   error: null,
   accessToken: null,
+  isAdmin: false,
   signUp: async (name, email, password, confrimPassword) => {
     set({ loading: true });
     if (password !== confrimPassword) {
@@ -98,7 +99,10 @@ export const useAuthStore = create((set, get) => ({
         },
       });
       console.log({ response });
-      set({ user: response.data.user });
+      set({
+        user: response.data.user,
+        isAdmin: response.data.user.role !== "admin",
+      });
       return { success: true };
     } catch (err) {
       console.log(err);

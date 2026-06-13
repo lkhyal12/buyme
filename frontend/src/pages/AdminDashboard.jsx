@@ -6,6 +6,8 @@ import AnalyticsTab from "../components/AnalyticsTab";
 import ProductsList from "../components/ProductsList";
 import { useProducteStore } from "../store/productStore";
 import { useEffect } from "react";
+import { useAuthStore } from "../store/authStore";
+import AccessDenied from "../components/AccessDenied";
 const tabs = [
   { id: "create", label: "Create Product", icon: PlusCircle },
   { id: "products", label: "Products", icon: ShoppingBasket },
@@ -13,12 +15,12 @@ const tabs = [
 ];
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("create");
-  const { fetchAllProducts, loading } = useProducteStore();
-
+  const { fetchAllProducts } = useProducteStore();
+  const { isAdmin } = useAuthStore();
   useEffect(() => {
     fetchAllProducts();
   }, [fetchAllProducts]);
-
+  if (!isAdmin) return <AccessDenied />;
   return (
     <div className="min-h-screen relative overflow-hidden">
       <div className="relative z-10 container mx-auto px-4 py-18">

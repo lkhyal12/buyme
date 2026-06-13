@@ -11,6 +11,7 @@ import CategoryPage from "./pages/CategoryPage";
 import CartPage from "./pages/CartPage";
 import PurchaseSuccess from "./pages/PurchaseSuccess";
 import PurchaseCancel from "./pages/PurchaseCancel";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 const App = () => {
   const { checkAuth, user } = useAuthStore();
@@ -31,14 +32,16 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/category/:category" element={<CategoryPage />} />
-        <Route path="/cart" element={<CartPage />} />
-        <Route
-          path="/purchase-success/:session_id"
-          element={<PurchaseSuccess />}
-        />
-        <Route path="/purchase-cancel" element={<PurchaseCancel />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route
+            path="/purchase-success/:session_id"
+            element={<PurchaseSuccess />}
+          />
+          <Route path="/purchase-cancel" element={<PurchaseCancel />} />
+        </Route>
       </Routes>
     </div>
   );
